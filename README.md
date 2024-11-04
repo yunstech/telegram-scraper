@@ -107,7 +107,7 @@ When scraping a channel for the first time, please note:
 The script provides an interactive menu with the following options:
 
 - **[A]** Add new channel
-  - Enter the channel ID or username
+  - Enter the channel ID or channelname
 - **[R]** Remove channel
   - Remove a channel from scraping list
 - **[S]** Scrape all channels
