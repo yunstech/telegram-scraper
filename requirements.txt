@@ -1,0 +1,4 @@
+telethon
+aiohttp
+sqlite3
+asyncio
