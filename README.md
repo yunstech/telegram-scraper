@@ -129,10 +129,6 @@ You can use either:
 - Channel username (e.g., `channelname`)
 - Channel ID (e.g., `-1001234567890`)
 
-To get a channel's ID:
-1. Forward a message from the channel to @userinfobot
-2. The bot will reply with channel information including its ID
-
 ## Data Storage 💾
 
 ### Database Structure
