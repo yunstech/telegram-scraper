@@ -257,60 +257,77 @@ async def view_channels():
     for channel, last_id in state['channels'].items():
         print(f"Channel ID: {channel}, Last Message ID: {last_id}")
 
+async def list_Channels():
+    try:
+        print("\nList of channels joined by account: ")
+        async for dialog in client.iter_dialogs():
+            if (dialog.id != 777000):
+                print(f"* {dialog.title} (id: {dialog.id})")
+    except Exception as e:
+        print(f"Error processing: {e}")
+
+
 async def manage_channels():
     while True:
         print("\nMenu:")
         print("[A] Add new channel")
         print("[R] Remove channel")
         print("[S] Scrape all channels")
-        print("[M] Toggle media scraping (currently {})".format("enabled" if state['scrape_media'] else "disabled"))
+        print("[M] Toggle media scraping (currently {})".format(
+            "enabled" if state['scrape_media'] else "disabled"))
         print("[C] Continuous scraping")
         print("[E] Export data")
-        print("[V] View channels")
+        print("[V] View saved channels")
+        print("[L] List account channels")
         print("[Q] Quit")
 
         choice = input("Enter your choice: ").lower()
-        if choice == 'a':
-            channel = input("Enter channel ID: ")
-            state['channels'][channel] = 0
-            save_state(state)
-            print(f"Added channel {channel}.")
-        elif choice == 'r':
-            channel = input("Enter channel ID to remove: ")
-            if channel in state['channels']:
-                del state['channels'][channel]
+        match (choice):
+            case 'a':
+                channel = input("Enter channel ID: ")
+                state['channels'][channel] = 0
                 save_state(state)
-                print(f"Removed channel {channel}.")
-            else:
-                print(f"Channel {channel} not found.")
-        elif choice == 's':
-            for channel in state['channels']:
-                await scrape_channel(channel, state['channels'][channel])
-        elif choice == 'm':
-            state['scrape_media'] = not state['scrape_media']
-            save_state(state)
-            print(f"Media scraping {'enabled' if state['scrape_media'] else 'disabled'}.")
-        elif choice == 'c':
-            global continuous_scraping_active
-            continuous_scraping_active = True
-            task = asyncio.create_task(continuous_scraping())
-            print("Continuous scraping started. Press Ctrl+C to stop.")
-            try:
-                await asyncio.sleep(float('inf'))
-            except KeyboardInterrupt:
-                continuous_scraping_active = False
-                task.cancel()
-                print("\nStopping continuous scraping...")
-                await task
-        elif choice == 'e':
-            await export_data()
-        elif choice == 'v':
-            await view_channels()
-        elif choice == 'q':
-            print("Quitting...")
-            sys.exit()
-        else:
-            print("Invalid option.")
+                print(f"Added channel {channel}.")
+            case 'r':
+                channel = input("Enter channel ID to remove: ")
+                if channel in state['channels']:
+                    del state['channels'][channel]
+                    save_state(state)
+                    print(f"Removed channel {channel}.")
+                else:
+                    print(f"Channel {channel} not found.")
+            case 's':
+                for channel in state['channels']:
+                    await scrape_channel(channel, state['channels'][channel])
+            case 'm':
+                state['scrape_media'] = not state['scrape_media']
+                save_state(state)
+                print(
+                    f"Media scraping {'enabled' if state['scrape_media'] else 'disabled'}.")
+            case 'c':
+                global continuous_scraping_active
+                continuous_scraping_active = True
+                task = asyncio.create_task(continuous_scraping())
+                print("Continuous scraping started. Press Ctrl+C to stop.")
+                try:
+                    await asyncio.sleep(float('inf'))
+                except KeyboardInterrupt:
+                    continuous_scraping_active = False
+                    task.cancel()
+                    print("\nStopping continuous scraping...")
+                    await task
+            case 'e':
+                await export_data()
+            case 'v':
+                await view_channels()
+            case 'q':
+                print("Quitting...")
+                sys.exit()
+            case 'l':
+                await list_Channels()
+
+            case _:
+                print("Invalid option.")
 
 async def main():
     await client.start()
