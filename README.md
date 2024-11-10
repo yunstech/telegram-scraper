@@ -117,8 +117,10 @@ The script provides an interactive menu with the following options:
   - Real-time monitoring of channels for new messages
 - **[E]** Export data
   - Export to JSON and CSV formats
-- **[V]** View channels
-  - List all configured channels
+- **[V]** View saved channels
+  - List all saved channels
+- **[L]** List account channels
+  - List all channels with ID:s for account
 - **[Q]** Quit
 
 ### Channel IDs 📢
