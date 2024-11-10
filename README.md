@@ -41,7 +41,6 @@ Contents of `requirements.txt`:
 ```
 telethon
 aiohttp
-sqlite3
 asyncio
 ```
 
