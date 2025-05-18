@@ -163,6 +163,9 @@ async def scrape_channel(channel, offset_id):
         processed_messages = 0
 
         async for message in client.iter_messages(entity, offset_id=offset_id, reverse=True):
+            sys.stdout.write("\r\033[K")
+            sys.stdout.write(f"Counting messages in: {channel} - Messages found: {total_messages}")
+            sys.stdout.flush()
             total_messages += 1
 
         if total_messages == 0:
@@ -190,6 +193,7 @@ async def scrape_channel(channel, offset_id):
                 processed_messages += 1
 
                 progress = (processed_messages / total_messages) * 100
+                sys.stdout.write("\r\033[K")
                 sys.stdout.write(f"\rScraping channel: {channel} - Progress: {progress:.2f}%")
                 sys.stdout.flush()
 
