@@ -162,11 +162,8 @@ async def scrape_channel(channel, offset_id):
         total_messages = 0
         processed_messages = 0
 
-        async for message in client.iter_messages(entity, offset_id=offset_id, reverse=True):
-            sys.stdout.write("\r\033[K")
-            sys.stdout.write(f"Counting messages in: {channel} - Messages found: {total_messages}")
-            sys.stdout.flush()
-            total_messages += 1
+        result = await client.get_messages(entity, offset_id=offset_id, reverse=True, limit=0)
+        total_messages = result.total
 
         if total_messages == 0:
             print(f"No messages found in channel {channel}.")
