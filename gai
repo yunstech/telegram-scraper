@@ -133,7 +133,7 @@ async def download_media(channel, message):
         media_file_name = message.file.name or f"{message.id}.{message.file.ext if message.file.ext else 'bin'}"
     
     if not media_file_name:
-        print(f"Unable to determine file name for message {message.id}. Skipping download.")
+        # print(f"Unable to determine file name for message {message.id}. Skipping download.")
         logging.info(f"Unable to determine file name for message {message.id}. Skipping download.")
         return None
     
@@ -153,7 +153,7 @@ async def download_media(channel, message):
                 logging.info("message.media为MessageMediaDocument")
                 media_path = await message.download_media(file=media_folder)
             if media_path:
-                print(f"Successfully downloaded media to: {media_path}")
+
                 logging.info(f"Successfully downloaded media to: {media_path}")
             break
         except (TimeoutError, aiohttp.ClientError, RPCError) as e:
@@ -263,12 +263,16 @@ async def continuous_scraping():
 
 async def export_data():
     for channel in state['channels']:
+        if state['channels'][channel] == 0:
+            print(f"No messages to export for channel {channel}. Skipping export.")
+            continue
         export_to_csv(channel)
         export_to_json(channel)
 
 def export_to_csv(channel):
     db_file = os.path.join(channel, f'{channel}.db')
     csv_file = os.path.join(channel, f'{channel}.csv')
+    # print(f"Trying to open database file: {db_file}")
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute('SELECT * FROM messages')
@@ -376,7 +380,7 @@ async def manage_channels():
                 #读取csv的第二列
                 channel_list = set(state['channels'].keys())
                 print("Reading csv file...")
-                with open('tudou.csv', 'r') as f:
+                with open('username.csv', 'r') as f:
                     reader = csv.reader(f)
                     for row in tqdm(reader, desc="Processing channels"):
                         row[1] = row[1].strip().lstrip('@')
