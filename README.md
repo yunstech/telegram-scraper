@@ -64,7 +64,7 @@ Keep these credentials safe, you'll need them to run the script!
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/unnohwn/telegram-scraper.git
+git clone https://github.com/robertaitch/telegram-scraper.git
 cd telegram-scraper
 ```
 
