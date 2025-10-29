@@ -1,8 +1,8 @@
 module.exports = {
   apps: [
     {
-      name: "bash-runner-worker",
-      cwd: "/home/ubuntu/SEVIMA/Batman/databreach/bash-queue-api",
+      name: "telegram-scrap",
+      cwd: "/home/yunus/databreach/telegram-scraper",
       script: "./venv/bin/python3",
       args: "worker.py",
       watch: false,
@@ -13,3 +13,4 @@ module.exports = {
     }
   ]
 };
+
