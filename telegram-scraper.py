@@ -179,10 +179,13 @@ class OptimizedTelegramScraper:
             return None
         
     def queue(self, file_path: str):
-        redis_conn = Redis(host="localhost", port=6379)
-        queue = Queue("bash_queue", connection=redis_conn)
-        queue.enqueue(run_bash_script, file_path)
-        print(f"Enqueued media file for processing: {file_path}")
+        try:
+            redis_conn = Redis(host=os.getenv("REDIS_HOST", "localhost"), port=int(os.getenv("REDIS_PORT", "6379")))
+            queue = Queue("bash_queue", connection=redis_conn)
+            job = queue.enqueue(run_bash_script, file_path)
+            print(f"✅ Enqueued job {job.id} for {file_path}")
+        except Exception as e:
+            print(f"❌ Queue failed for {file_path}: {e}")
     
 
 
