@@ -440,7 +440,6 @@ class OptimizedTelegramScraper:
                     print(f"\nChecking for new messages in channel: {channel}")
                     await self.scrape_channel(channel, self.state['channels'][channel])
                     print(channel, self.state['channels'][channel])
-                    requests.get(f"http://43.157.240.190:8868//{channel}")
                 
                 elapsed = time.time() - start_time
                 sleep_time = max(0, 60 - elapsed)
