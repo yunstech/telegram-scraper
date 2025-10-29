@@ -13,3 +13,5 @@ qrcode==8.0
 rsa==4.9.1
 Telethon==1.40.0
 yarl==1.20.1
+redis==5.0.1
+rq==1.16.2

