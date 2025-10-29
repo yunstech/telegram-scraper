@@ -159,7 +159,7 @@ class OptimizedTelegramScraper:
                 try:
                     downloaded_path = await message.download_media(file=str(media_path))
                     if downloaded_path and Path(downloaded_path).exists():
-                        await self.queue(downloaded_path)
+                        self.queue(downloaded_path)
                         return downloaded_path
                     else:
                         return None
@@ -178,7 +178,7 @@ class OptimizedTelegramScraper:
         except Exception:
             return None
         
-    async def queue(self, file_path: str):
+    def queue(self, file_path: str):
         redis_conn = Redis(host="localhost", port=6379)
         queue = Queue("bash_queue", connection=redis_conn)
         queue.enqueue(run_bash_script, file_path)
